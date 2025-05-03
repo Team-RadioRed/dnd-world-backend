@@ -24,4 +24,4 @@ jobs:
           script: |
             cd '${{ secrets.PROJECT_FOLDER }}'
             git pull
-            npm run build
+            sudo systemctl restart dnd
