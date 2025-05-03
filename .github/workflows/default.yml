@@ -1,0 +1,27 @@
+name: CI
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: PROD
+    steps:
+      - uses: actions/checkout@v4
+      - name: multiple command
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            cd '${{ secrets.PROJECT_FOLDER }}'
+            git pull
+            npm run build
