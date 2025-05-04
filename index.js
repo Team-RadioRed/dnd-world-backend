@@ -52,6 +52,20 @@ app.get("/api/mapObject", async (req, res) => {
   }
 });
 
+app.get("/api/subPage", async (req, res) => {
+  console.log("Server GET /api/subPage");
+  const collection = req.app.locals.db.collection("sailpunkSubPage");
+
+  try {
+    const subPages = await collection.find({}).toArray();
+    console.log("Status code: 200");
+    res.send(subPages);
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
+});
+
 process.on("SIGINT", async () => {
   await mongoClient.close();
   console.log("Server stop.");

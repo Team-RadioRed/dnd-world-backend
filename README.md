@@ -9,5 +9,5 @@ npm install
 ### Start Server
 
 ```sh
-npm --env-file=.env index.js
+node --env-file=.env index.js
 ```
