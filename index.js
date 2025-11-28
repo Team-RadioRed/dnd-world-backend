@@ -40,7 +40,7 @@ app.get("/api/worlds", async (req, res) => {
 });
 
 app.get("/api/character/:project", async (req, res) => {
-  const project = req.params.id;
+  const project = req.params.project;
   console.log(`Server GET /api/character/:${project}`);
   try {
     const data = await getData(getCollection(req, `${project}-character`));
@@ -53,7 +53,7 @@ app.get("/api/character/:project", async (req, res) => {
 });
 
 app.get("/api/mapObject/:project", async (req, res) => {
-  const project = req.params.id;
+  const project = req.params.project;
   console.log(`Server GET /api/mapObject/:${project}`);
   try {
     const data = await getData(getCollection(req, `${project}-map-object`));
@@ -66,7 +66,7 @@ app.get("/api/mapObject/:project", async (req, res) => {
 });
 
 app.get("/api/subPage/:project", async (req, res) => {
-  const project = req.params.id;
+  const project = req.params.project;
   console.log(`Server GET /api/subPage/:${project}`);
   try {
     const data = await getData(getCollection(req, `${project}-sub-page`));
@@ -78,7 +78,7 @@ app.get("/api/subPage/:project", async (req, res) => {
 });
 
 app.get("/api/items/:project", async (req, res) => {
-  const project = req.params.id;
+  const project = req.params.project;
   console.log(`Server GET /api/items/:${project}`);
   try {
     const data = await getData(getCollection(req, `${project}-items`));
