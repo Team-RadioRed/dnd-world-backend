@@ -7,12 +7,15 @@ app.use(express.static("public"));
 app.use(express.json());
 app.use(cors());
 
-const mongoClient = new MongoClient(process.env.URL_CONNECTION);
+const MONGO_CLIENT = new MongoClient(process.env.URL_CONNECTION);
+
+const DATABASE_NAME = "dndmapinfo";
+const COLLECTION_WORLD_DB_NAME = "worlds";
 
 (async () => {
   try {
-    await mongoClient.connect();
-    app.locals.db = mongoClient.db("dndmapinfo");
+    await MONGO_CLIENT.connect();
+    app.locals.db = MONGO_CLIENT.db(DATABASE_NAME);
     app.listen(3000);
     console.log("Server start.");
   } catch (err) {
@@ -24,50 +27,78 @@ app.get("/", async (req, res) => {
   res.json("Welcom to node-mongo server.");
 });
 
-app.get("/api/character", async (req, res) => {
-  console.log("Server GET /api/character/");
-  const collection = req.app.locals.db.collection("sailpunkCharacter");
-
+app.get("/api/worlds", async (req, res) => {
+  console.log("Server GET /api/worlds/");
   try {
-    const characters = await collection.find({}).toArray();
+    const data = await getData(getCollection(req, COLLECTION_WORLD_DB_NAME));
     console.log("Status code: 200");
-    res.send(characters);
-  } catch (err) {
-    console.log(err);
+    res.send(data);
+  } catch (error) {
+    console.log(error);
     res.sendStatus(500);
   }
 });
 
-app.get("/api/mapObject", async (req, res) => {
-  console.log("Server GET /api/mapObject/");
-  const collection = req.app.locals.db.collection("sailpunkMapObject");
-
+app.get("/api/character/:project", async (req, res) => {
+  const project = req.params.id;
+  console.log(`Server GET /api/character/:${project}`);
   try {
-    const mapObject = await collection.find({}).toArray();
+    const data = await getData(getCollection(req, `${project}-character`));
     console.log("Status code: 200");
-    res.send(mapObject);
-  } catch (err) {
-    console.log(err);
+    res.send(data);
+  } catch (error) {
+    console.log(error);
     res.sendStatus(500);
   }
 });
 
-app.get("/api/subPage", async (req, res) => {
-  console.log("Server GET /api/subPage");
-  const collection = req.app.locals.db.collection("sailpunkSubPage");
-
+app.get("/api/mapObject/:project", async (req, res) => {
+  const project = req.params.id;
+  console.log(`Server GET /api/mapObject/:${project}`);
   try {
-    const subPages = await collection.find({}).toArray();
+    const data = await getData(getCollection(req, `${project}-map-object`));
     console.log("Status code: 200");
-    res.send(subPages);
-  } catch (err) {
-    console.log(err);
+    res.send(data);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
+
+app.get("/api/subPage/:project", async (req, res) => {
+  const project = req.params.id;
+  console.log(`Server GET /api/subPage/:${project}`);
+  try {
+    const data = await getData(getCollection(req, `${project}-sub-page`));
+    res.send(data);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
+
+app.get("/api/items/:project", async (req, res) => {
+  const project = req.params.id;
+  console.log(`Server GET /api/items/:${project}`);
+  try {
+    const data = await getData(getCollection(req, `${project}-items`));
+    res.send(data);
+  } catch (error) {
+    console.log(error);
     res.sendStatus(500);
   }
 });
 
 process.on("SIGINT", async () => {
-  await mongoClient.close();
+  await MONGO_CLIENT.close();
   console.log("Server stop.");
   process.exit();
 });
+
+function getCollection(req, collectionName) {
+  return req.app.locals.db.collection(collectionName);
+}
+
+async function getData(collection) {
+  return await collection.find({}).toArray();
+}
