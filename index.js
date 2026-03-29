@@ -7,10 +7,10 @@ app.use(express.static("public"));
 app.use(express.json());
 app.use(cors());
 
-const MONGO_CLIENT = new MongoClient(process.env.URL_CONNECTION);
-
 const DATABASE_NAME = "dndmapinfo";
-const COLLECTION_WORLD_DB_NAME = "worlds";
+const WORLDS_NAME = ["sailpunk", "aeterna"];
+
+const MONGO_CLIENT = new MongoClient(process.env.URL_CONNECTION);
 
 (async () => {
   try {
@@ -30,7 +30,13 @@ app.get("/", async (req, res) => {
 app.get("/api/worlds", async (req, res) => {
   console.log("Server GET /api/worlds/");
   try {
-    const data = await getData(getCollection(req, COLLECTION_WORLD_DB_NAME));
+    const data = {};
+
+    for (let worldName of WORLDS_NAME) {
+      const configData = await getData(getCollection(req, `${worldName}-config`));
+      data[worldName] = configData;
+    }
+
     console.log("Status code: 200");
     res.send(data);
   } catch (error) {
