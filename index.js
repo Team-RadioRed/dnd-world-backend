@@ -34,7 +34,11 @@ app.get("/api/worlds", async (req, res) => {
 
     for (let worldName of WORLDS_NAME) {
       const configData = await getData(getCollection(req, `${worldName}-config`));
-      data[worldName] = configData;
+      if (configData !== null) {
+        data[worldName] = Object.fromEntries(
+          configData.map(item => [item.name, item])
+        );
+      }
     }
 
     console.log("Status code: 200");
