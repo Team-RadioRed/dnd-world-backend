@@ -8,7 +8,7 @@ app.use(express.json());
 app.use(cors());
 
 const DATABASE_NAME = "dndmapinfo";
-const WORLDS_NAME = ["sailpunk", "aeterna"];
+const WORLDS_NAME = ["sailpunk", "aeterna", "umbrae-stellarum"];
 
 const MONGO_CLIENT = new MongoClient(process.env.URL_CONNECTION);
 
