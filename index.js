@@ -3,7 +3,6 @@ const cors = require("cors");
 const { MongoClient } = require("mongodb");
 
 const app = express();
-app.use(express.static("public"));
 app.use(express.json());
 app.use(cors());
 
@@ -68,18 +67,6 @@ app.get("/api/mapObject/", async (req, res) => {
   try {
     const data = await getData(getCollection(req, `${project}-map-object`));
     console.log("Status code: 200");
-    res.send(data);
-  } catch (error) {
-    console.log(error);
-    res.sendStatus(500);
-  }
-});
-
-app.get("/api/subPage/", async (req, res) => {
-  const project = req.query.project;
-  console.log(`Server GET /api/subPage/:${project}`);
-  try {
-    const data = await getData(getCollection(req, `${project}-sub-page`));
     res.send(data);
   } catch (error) {
     console.log(error);
